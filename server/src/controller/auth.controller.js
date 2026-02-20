@@ -34,26 +34,24 @@ exports.registerUser = async (req, res, next) => {
   }
 };
 
+
+
 exports.loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(401).json({
-        message: "Invalid credentials"
+        message: "Invalid email"
       });
     }
 
-    const isMatch = await comparePassword(
-      password,
-      user.password
-    );
+    const isMatch = await comparePassword(password,user.password);
 
     if (!isMatch) {
       return res.status(401).json({
-        message: "Invalid credentials"
+        message: "Invalid password"
       });
     }
 
@@ -61,9 +59,7 @@ exports.loginUser = async (req, res, next) => {
       userId: user._id,
       role: user.role
     });
-
-    res.status(200).json({ token });
-
+    res.status(200).json({ token, statusCode: 200, message: "loged in successfully.." });
   } catch (error) {
     next(error);
   }
