@@ -1,7 +1,7 @@
 const Product = require("../models/product.model");
 
 
-// 🔐 Admin only - Create Product
+
 exports.createProduct = async (req, res) => {
   try {
     const product = await Product.create({
@@ -10,8 +10,8 @@ exports.createProduct = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "Product created",
-      product
+      statusCode: 200,
+      message: "Product created successfully",
     });
 
   } catch (error) {
@@ -19,8 +19,6 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-
-// 📦 Get All Products (Public)
 exports.getProducts = async (req, res) => {
   try {
     const products = await Product.find();
@@ -34,12 +32,17 @@ exports.getProducts = async (req, res) => {
 
 
 exports.updateProduct = async (req, res) => {
+  debugger
   try {
-    const updated = await Product.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const { _id, ...updateData } = req.body;
+
+    if (!_id) {
+      return res.status(400).json({ message: "Product ID is required" });
+    }
+    const updated = await Product.findByIdAndUpdate(_id, updateData, { new: true, runValidators: true });
+    if (!updated) {
+      return res.status(404).json({ message: "Product not found" });
+    }
 
     res.json(updated);
 

@@ -14,7 +14,7 @@ router.get("/", protect, getProducts);
 // Admin only routes
 router.post("/", protect, authorize("admin"), createProduct);
 
-router.put("/:id", protect, authorize("admin"), updateProduct);
+router.put("/", protect, authorize("admin"), updateProduct);
 
 router.delete("/:id", protect, authorize("admin"), deleteProduct);
 
